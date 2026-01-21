@@ -149,7 +149,7 @@ const ChatWidget: React.FC = () => {
               ))}
               {isLoading && (
                 <div className="text-delta-green animate-pulse">
-                  > PROCESSING...
+                  {"> PROCESSING..."}
                 </div>
               )}
               <div ref={messagesEndRef} />
