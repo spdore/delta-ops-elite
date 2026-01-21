@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delta Ops Elite | 顶级战术陪玩</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 
+      Fonts License Audit:
+      1. JetBrains Mono: SIL Open Font License 1.1 (Free for Commercial Use)
+      2. Space Grotesk: SIL Open Font License 1.1 (Free for Commercial Use)
+      3. Noto Sans SC: SIL Open Font License 1.1 (Free for Commercial Use)
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'delta-gold': '#FFD700',
+              'delta-green': '#00FF9D',
+              'delta-accent': '#FF2A6D',
+              'delta-dark': '#030303',
+              'delta-card': '#0A0A0A',
+            },
+            fontFamily: {
+              // Stack: English Tech Font -> Chinese Safe Font -> System Fallback
+              sans: ['Space Grotesk', 'Noto Sans SC', 'sans-serif'],
+              // Stack: English Code Font -> Chinese Safe Font -> System Fallback
+              mono: ['JetBrains Mono', 'Noto Sans SC', 'monospace'],
+            },
+            animation: {
+              'spin-slow': 'spin 12s linear infinite',
+              'scroll': 'scroll 20s linear infinite',
+              'grain': 'grain 8s steps(10) infinite',
+              'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
+              'glitch': 'glitch 1s linear infinite',
+              'grid-flow': 'grid-flow 20s linear infinite',
+            },
+            keyframes: {
+              scroll: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-100%)' },
+              },
+              grain: {
+                '0%, 100%': { transform: 'translate(0, 0)' },
+                '10%': { transform: 'translate(-5%, -10%)' },
+                '20%': { transform: 'translate(-15%, 5%)' },
+                '30%': { transform: 'translate(7%, -25%)' },
+                '40%': { transform: 'translate(-5%, 25%)' },
+                '50%': { transform: 'translate(-15%, 10%)' },
+                '60%': { transform: 'translate(15%, 0%)' },
+                '70%': { transform: 'translate(0%, 15%)' },
+                '80%': { transform: 'translate(3%, 35%)' },
+                '90%': { transform: 'translate(-10%, 10%)' },
+              },
+              'border-beam': {
+                '100%': { offsetDistance: '100%' },
+              },
+              glitch: {
+                '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                '62%': { transform: 'translate(0,0) skew(5deg)' },
+              },
+              'grid-flow': {
+                '0%': { transform: 'translateY(0)' },
+                '100%': { transform: 'translateY(50px)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        background-color: #030303;
+        color: #e5e5e5;
+        overflow-x: hidden;
+        cursor: none;
+      }
+
+      /* Force hide cursor on everything to prevent the hand icon */
+      * {
+        cursor: none !important;
+      }
+
+      /* CRT Scanlines */
+      .scanlines {
+        background: linear-gradient(
+          to bottom,
+          rgba(255,255,255,0),
+          rgba(255,255,255,0) 50%,
+          rgba(0,0,0,0.2) 50%,
+          rgba(0,0,0,0.2)
+        );
+        background-size: 100% 4px;
+        position: fixed;
+        pointer-events: none;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 9998;
+        opacity: 0.15;
+      }
+
+      /* Advanced Grain Effect */
+      .grain-overlay {
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.04;
+        animation: grain 8s steps(10) infinite;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: overlay;
+      }
+
+      ::selection {
+        background: #00FF9D;
+        color: #000;
+      }
+
+      ::-webkit-scrollbar {
+        width: 0px; 
+        background: transparent; 
+      }
+      
+      .text-outline {
+        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+        color: transparent;
+      }
+      
+      .text-outline-green {
+        -webkit-text-stroke: 1px rgba(0, 255, 157, 0.5);
+        color: transparent;
+      }
+
+      .clip-diagonal {
+        clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+      }
+
+      /* Perspective for 3D Cards */
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom": "https://esm.sh/react-dom@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "framer-motion": "https://esm.sh/framer-motion@^12.27.5",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
